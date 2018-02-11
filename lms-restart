@@ -1,0 +1,21 @@
+#!/bin/bash
+
+prog="logitechmediaserver"
+
+/etc/init.d/${prog} --ifstarted stop
+
+if pgrep -f "${prog}" ; then
+    echo "processes running - cleaning up in 2 seconds"
+    sleep 2
+    pkill -9 -u "${prog}" -f "${prog}"
+fi
+
+/etc/init.d/avahi-daemon --ifstarted stop
+sleep 2
+
+/etc/init.d/avahi-daemon --ifstopped start
+sleep 2
+
+/etc/init.d/${prog} --ifstopped start
+
+exit 0
